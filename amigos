@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    char listaL[100 * 50];  
+    char listaN[100 * 50];    
+    char listaS[50];             
+
+    // Lê a lista atual de amigos
+    fgets(listaL, sizeof(listaL), stdin);
+    listaL[strcspn(listaL, "\n")] = '\0'; // Remove a nova linha
+
+    // Lê a nova lista de amigos
+    fgets(listaN, sizeof(listaN), stdin);
+    listaN[strcspn(listaN, "\n")] = '\0'; // Remove a nova linha
+
+    // Lê o amigo a ser indicado
+    fgets(listaS, sizeof(listaS), stdin);
+    listaS[strcspn(listaS, "\n")] = '\0'; // Remove a nova linha
+
+    // Divide os amigos atuais em um array
+    char *amigos_atual[100];
+    int quantidade_atual = 0;
+    char *token = strtok(listaL, " ");
+    while (token != NULL) {
+        amigos_atual[quantidade_atual++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    // Divide os novos amigos em um array
+    char *novos_amigos[100];
+    int quantidade_nova = 0;
+    token = strtok(listaN, " ");
+    while (token != NULL) {
+        novos_amigos[quantidade_nova++] = token;
+        token = strtok(NULL, " ");
+    }
+
+    // Flag para controlar a impressão correta
+    int primeiro = 1;
+
+    // Imprime a lista de amigos atualizada
+    if (strcmp(listaS, "nao") == 0) {
+        // Se não há indicação, anexa os novos amigos ao final
+        for (int i = 0; i < quantidade_atual; i++) {
+            if (!primeiro) printf(" ");
+            printf("%s", amigos_atual[i]);
+            primeiro = 0;
+        }
+        for (int i = 0; i < quantidade_nova; i++) {
+            printf(" %s", novos_amigos[i]);
+        }
+    } else {
+        // Insere novos amigos antes do amigo indicado
+        for (int i = 0; i < quantidade_atual; i++) {
+            if (strcmp(amigos_atual[i], listaS) == 0) {
+                for (int j = 0; j < quantidade_nova; j++) {
+                    if (!primeiro) printf(" ");
+                    printf("%s", novos_amigos[j]);
+                    primeiro = 0;
+                }
+            }
+            if (!primeiro) printf(" ");
+            printf("%s", amigos_atual[i]);
+            primeiro = 0;
+        }
+    }
+
+    printf("\n");
+    return 0;
+}
